@@ -63,6 +63,22 @@ std::uint64_t getUniqueId() noexcept
 } // namespace TextureImpl
 } // namespace
 
+namespace
+{
+    // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+    [[nodiscard]] constexpr unsigned int getNextPowerOfTwo(unsigned int v)
+    {
+        v--;
+        v |= v >> 1;
+        v |= v >> 2;
+        v |= v >> 4;
+        v |= v >> 8;
+        v |= v >> 16;
+        v++;
+
+        return v;
+    }
+} // namespace
 
 namespace sf
 {
@@ -1062,11 +1078,7 @@ unsigned int Texture::getValidSize(unsigned int size)
     }
 
     // If hardware doesn't support NPOT textures, we calculate the nearest power of two
-    unsigned int powerOfTwo = 1;
-    while (powerOfTwo < size)
-        powerOfTwo *= 2;
-
-    return powerOfTwo;
+    return getNextPowerOfTwo(size);
 }
 
 
