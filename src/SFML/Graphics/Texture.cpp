@@ -358,6 +358,8 @@ bool Texture::resize(Vector2u size, bool sRgb)
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureWrapParam));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+
     m_cacheId = TextureImpl::getUniqueId();
 
     m_hasMipmap = false;
@@ -442,6 +444,8 @@ bool Texture::loadFromImage(const Image& image, bool sRgb, const IntRect& area)
         }
 
         glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+        glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+
         m_hasMipmap = false;
 
         // Force an OpenGL flush, so that the texture will appear updated
@@ -599,6 +603,8 @@ void Texture::update(const std::uint8_t* pixels, Vector2u size, Vector2u dest)
                             GL_UNSIGNED_BYTE,
                             pixels));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+
     m_hasMipmap     = false;
     m_pixelsFlipped = false;
     m_cacheId       = TextureImpl::getUniqueId();
@@ -787,6 +793,8 @@ void Texture::update(const Window& window, Vector2u dest)
                                 static_cast<GLsizei>(window.getSize().x),
                                 static_cast<GLsizei>(window.getSize().y)));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+
     m_hasMipmap     = false;
     m_pixelsFlipped = true;
     m_cacheId       = TextureImpl::getUniqueId();
@@ -830,6 +838,7 @@ void Texture::setSmooth(bool smooth)
     {
         glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
     }
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
 
@@ -892,6 +901,7 @@ void Texture::setRepeated(bool repeated)
     glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureWrapParam));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureWrapParam));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
 
@@ -924,6 +934,7 @@ bool Texture::generateMipmap()
     glCheck(glTexParameteri(GL_TEXTURE_2D,
                             GL_TEXTURE_MIN_FILTER,
                             m_isSmooth ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_LINEAR));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 
     m_hasMipmap = true;
 
@@ -944,6 +955,7 @@ void Texture::invalidateMipmap()
 
     glCheck(glBindTexture(GL_TEXTURE_2D, m_texture));
     glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_isSmooth ? GL_LINEAR : GL_NEAREST));
+    glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 
     m_hasMipmap = false;
 }
